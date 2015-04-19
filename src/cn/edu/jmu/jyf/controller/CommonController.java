@@ -1,5 +1,6 @@
 package cn.edu.jmu.jyf.controller;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,22 @@ public class CommonController {
 	}
 
 	/**
+	 * 获取热门的N篇文章的摘要。此接口为公开接口，无需授权。
+	 * 
+	 * @param amount
+	 * @return最热门N篇文章摘要的JSON数组
+	 */
+	@RequestMapping(value = "/api/article/list/hot/{amount}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getHotArticleList(
+			@PathVariable("amount") Integer amount) {
+		if (amount <= 0) {
+			return null;
+		}
+		return CommonService.getHot(amount);
+	}
+
+	/**
 	 * 获取Tag接口
 	 * 
 	 * @return 包含Tag信息的JSON数组
@@ -57,4 +74,21 @@ public class CommonController {
 		return CommonService.getTags();
 	}
 
+	/**
+	 * 获取过往文章列表
+	 * 
+	 * @param time
+	 *            Long型的Timestamp数值,获取这个时间点以前的文章
+	 * @param amount
+	 *            获取时间点在time之前的文章数量
+	 * @return 文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/before/{time}/{amount}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getHistoryArticleList(
+			@PathVariable("time") Timestamp time,
+			@PathVariable("amount") Integer amount) {
+		return null;
+
+	}
 }

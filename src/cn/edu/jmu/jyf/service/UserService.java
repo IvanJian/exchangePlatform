@@ -176,8 +176,7 @@ public class UserService {
 		return user;
 	}
 
-	public static Token authenticate(String username, String password) {
-		String passwordHash = Md5Util.getMD5(password);
+	public static Token authenticate(String username, String passwordHash) {
 		UserDAO userDAO = UserDAO.getFromApplicationContext(SpringContextUtil
 				.getApplicationContext());
 		User user = new User();
@@ -249,9 +248,12 @@ public class UserService {
 				id.setTagTagId(keyword.getTag().getTagId());
 				keyword.setId(id);
 			}
+			System.out.println(article.getContent());
+			article.setRead(0);
 			article.setKeywords(keywords);
-			articleDAO.merge(article);
+			articleDAO.save(article);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;

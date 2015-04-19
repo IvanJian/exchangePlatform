@@ -16,6 +16,7 @@ public class ArticleModel {
 	private String content;
 	private Timestamp uploadDateTime;
 	private Integer likeAmount;
+	private Integer read;
 	private Set<String> tags = new HashSet<String>();
 
 	public Integer getArticleId() {
@@ -86,9 +87,17 @@ public class ArticleModel {
 		super();
 	}
 
+	public Integer getRead() {
+		return read;
+	}
+
+	public void setRead(Integer read) {
+		this.read = read;
+	}
+
 	public ArticleModel(Integer articleId, String authorName, String image,
 			String title, String content, Timestamp uploadDateTime,
-			Integer likeAmount, Set<String> tags) {
+			Integer likeAmount, Integer read, Set<String> tags) {
 		super();
 		this.articleId = articleId;
 		this.authorName = authorName;
@@ -97,6 +106,7 @@ public class ArticleModel {
 		this.content = content;
 		this.uploadDateTime = uploadDateTime;
 		this.likeAmount = likeAmount;
+		this.read = read;
 		this.tags = tags;
 	}
 
@@ -108,6 +118,7 @@ public class ArticleModel {
 		this.image = article.getImage();
 		this.authorName = article.getUser().getName();
 		this.likeAmount = article.getLikes().size();
+		this.read = article.getRead();
 		for (Iterator iterator = article.getKeywords().iterator(); iterator
 				.hasNext();) {
 			Keyword keyword = (Keyword) iterator.next();

@@ -21,6 +21,8 @@
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
 <script type="text/javascript" src="js/jquery-2.1.3.min.js"></script>
+<script type="text/javascript" src="js/jQuery.md5.js"></script>
+
 </head>
 
 <body>
@@ -114,7 +116,6 @@
 		});
 
 		$("#submit").click(function() {
-			alert("11");
 			var article = new Object();
 			article.title = "第一哦 是是是";
 			article.content = $("#content").val();
@@ -154,10 +155,10 @@
 
 		$("#login").click(function() {
 			var username = $("#username").val();
-			var password = $("#password").val();
+			var password = $.md5("123456");
 			$.post("api/user/authenticate", {
 				"username" : "jianyifan",
-				"password" : "123456"
+				"passwordHash" : password
 			}, function(data) {
 				token = data.token;
 				alert(data.responseCode);

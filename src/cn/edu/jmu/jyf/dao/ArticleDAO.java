@@ -149,7 +149,20 @@ public class ArticleDAO {
 			queryObject.setMaxResults(amount);
 			return queryObject.list();
 		} catch (RuntimeException re) {
-			log.error("find all failed", re);
+			log.error("get new failed", re);
+			throw re;
+		}
+	}
+
+	public List getHot(Integer amount) {
+		try {
+			String queryString = "from Article as article order by article.likes.size desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setFirstResult(0);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("get hot failed", re);
 			throw re;
 		}
 	}

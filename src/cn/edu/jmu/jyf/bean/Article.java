@@ -1,14 +1,16 @@
 package cn.edu.jmu.jyf.bean;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,6 +33,7 @@ public class Article implements java.io.Serializable {
 	private Timestamp uploadDateTime;
 	private Boolean isHidden;
 	private String image;
+	private Integer read;
 	private Set<Keyword> keywords = new HashSet<Keyword>(0);
 	private Set<Like> likes = new HashSet<Like>(0);
 	private Set<Bookmark> bookmarks = new HashSet<Bookmark>(0);
@@ -43,8 +46,9 @@ public class Article implements java.io.Serializable {
 
 	/** minimal constructor */
 	public Article(User user, String title, String content,
-			Timestamp uploadDateTime, Boolean isHidden) {
+			Timestamp uploadDateTime, Boolean isHidden, Integer read) {
 		this.user = user;
+		this.read = read;
 		this.title = title;
 		this.content = content;
 		this.uploadDateTime = uploadDateTime;
@@ -54,9 +58,11 @@ public class Article implements java.io.Serializable {
 	/** full constructor */
 	public Article(User user, String title, String content,
 			Timestamp uploadDateTime, Boolean isHidden, String image,
-			Set<Keyword> keywords, Set<Like> likes, Set<Bookmark> bookmarks) {
+			Set<Keyword> keywords, Set<Like> likes, Set<Bookmark> bookmarks,
+			Integer read) {
 		this.user = user;
 		this.title = title;
+		this.read = read;
 		this.content = content;
 		this.uploadDateTime = uploadDateTime;
 		this.isHidden = isHidden;
@@ -91,6 +97,15 @@ public class Article implements java.io.Serializable {
 	@Column(name = "title", nullable = false, length = 45)
 	public String getTitle() {
 		return this.title;
+	}
+
+	@Column(name = "read")
+	public Integer getRead() {
+		return this.read;
+	}
+
+	public void setRead(Integer read) {
+		this.read = read;
 	}
 
 	public void setTitle(String title) {
