@@ -26,8 +26,9 @@ public class CommonService {
 		if (article == null || article.getIsHidden()) {
 			return null;
 		}
-		Integer n = article.getRead();
-		article.setRead(n + 1);
+		Integer n = article.getReadNumber();
+		article.setReadNumber(n + 1);
+		articleDAO.merge(article);
 		return new ArticleModel(article);
 
 	}
@@ -63,11 +64,11 @@ public class CommonService {
 	 * @param amount
 	 * @return
 	 */
-	public static List<ArticleSummary> getHot(Integer amount) {
+	public static List<ArticleSummary> getHot(Integer amount, Integer begin) {
 		ArticleDAO articleDAO = SpringContextUtil.getBean("ArticleDAO");
 		List<Article> articles;
 		try {
-			articles = articleDAO.getHot(amount);
+			articles = articleDAO.getHot(amount, begin);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

@@ -33,10 +33,12 @@ public class Article implements java.io.Serializable {
 	private Timestamp uploadDateTime;
 	private Boolean isHidden;
 	private String image;
-	private Integer read;
+	private Integer readNumber;
 	private Set<Keyword> keywords = new HashSet<Keyword>(0);
 	private Set<Like> likes = new HashSet<Like>(0);
 	private Set<Bookmark> bookmarks = new HashSet<Bookmark>(0);
+
+	// private Integer weight;
 
 	// Constructors
 
@@ -46,9 +48,8 @@ public class Article implements java.io.Serializable {
 
 	/** minimal constructor */
 	public Article(User user, String title, String content,
-			Timestamp uploadDateTime, Boolean isHidden, Integer read) {
+			Timestamp uploadDateTime, Boolean isHidden) {
 		this.user = user;
-		this.read = read;
 		this.title = title;
 		this.content = content;
 		this.uploadDateTime = uploadDateTime;
@@ -58,15 +59,15 @@ public class Article implements java.io.Serializable {
 	/** full constructor */
 	public Article(User user, String title, String content,
 			Timestamp uploadDateTime, Boolean isHidden, String image,
-			Set<Keyword> keywords, Set<Like> likes, Set<Bookmark> bookmarks,
-			Integer read) {
+			Integer read, Set<Keyword> keywords, Set<Like> likes,
+			Set<Bookmark> bookmarks) {
 		this.user = user;
 		this.title = title;
-		this.read = read;
 		this.content = content;
 		this.uploadDateTime = uploadDateTime;
 		this.isHidden = isHidden;
 		this.image = image;
+		this.readNumber = read;
 		this.keywords = keywords;
 		this.likes = likes;
 		this.bookmarks = bookmarks;
@@ -97,15 +98,6 @@ public class Article implements java.io.Serializable {
 	@Column(name = "title", nullable = false, length = 45)
 	public String getTitle() {
 		return this.title;
-	}
-
-	@Column(name = "read")
-	public Integer getRead() {
-		return this.read;
-	}
-
-	public void setRead(Integer read) {
-		this.read = read;
 	}
 
 	public void setTitle(String title) {
@@ -148,7 +140,16 @@ public class Article implements java.io.Serializable {
 		this.image = image;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
+	@Column(name = "readNumber")
+	public Integer getReadNumber() {
+		return this.readNumber;
+	}
+
+	public void setReadNumber(Integer readNumber) {
+		this.readNumber = readNumber;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "article")
 	public Set<Keyword> getKeywords() {
 		return this.keywords;
 	}
@@ -157,7 +158,7 @@ public class Article implements java.io.Serializable {
 		this.keywords = keywords;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "article")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "article")
 	public Set<Like> getLikes() {
 		return this.likes;
 	}
@@ -174,5 +175,18 @@ public class Article implements java.io.Serializable {
 	public void setBookmarks(Set<Bookmark> bookmarks) {
 		this.bookmarks = bookmarks;
 	}
+
+	/*
+	 * 计算文章权重
+	 * 
+	 * public Integer getWeight() { int bookmarkNumber = 0; int likeNumber = 0;
+	 * if (this.bookmarks != null) { bookmarkNumber = this.bookmarks.size(); }
+	 * if (this.likes != null) { likeNumber = this.likes.size(); } this.weight =
+	 * bookmarkNumber * Config.WEIGHT_OF_BOOKMARK_IN_ARTICLE + likeNumber *
+	 * Config.WEIGHT_OF_LIKE_IN_ARTICLE + readNumber
+	 * Config.WEIGHT_OF_READNUMBER_IN_ARTICLE; return weight; }
+	 * 
+	 * public void setWeght(Integer weight) { this.weight = weight; }
+	 */
 
 }

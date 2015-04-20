@@ -48,19 +48,21 @@ public class CommonController {
 	}
 
 	/**
-	 * 获取热门的N篇文章的摘要。此接口为公开接口，无需授权。
+	 * 获取热门文章列表
 	 * 
-	 * @param amount
-	 * @return最热门N篇文章摘要的JSON数组
+	 * @param amount获取总数
+	 * @param begin从第N条记录开始
+	 * @return 包含文章列表的JSON数组
 	 */
-	@RequestMapping(value = "/api/article/list/hot/{amount}", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/article/list/hot/{amount}/{begin}", method = RequestMethod.GET)
 	@ResponseBody
 	public List<ArticleSummary> getHotArticleList(
-			@PathVariable("amount") Integer amount) {
-		if (amount <= 0) {
+			@PathVariable("amount") Integer amount,
+			@PathVariable("begin") Integer begin) {
+		if (amount <= 0 || begin <= 0) {
 			return null;
 		}
-		return CommonService.getHot(amount);
+		return CommonService.getHot(amount, begin);
 	}
 
 	/**

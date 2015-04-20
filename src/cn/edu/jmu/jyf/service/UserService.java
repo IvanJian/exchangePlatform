@@ -23,6 +23,7 @@ import cn.edu.jmu.jyf.bean.KeywordId;
 import cn.edu.jmu.jyf.bean.Like;
 import cn.edu.jmu.jyf.bean.LikeId;
 import cn.edu.jmu.jyf.bean.User;
+import cn.edu.jmu.jyf.config.Config;
 import cn.edu.jmu.jyf.dao.ArticleDAO;
 import cn.edu.jmu.jyf.dao.BookmarkDAO;
 import cn.edu.jmu.jyf.dao.InterestDAO;
@@ -33,20 +34,6 @@ import cn.edu.jmu.jyf.util.Md5Util;
 import cn.edu.jmu.jyf.util.SpringContextUtil;
 
 public class UserService {
-
-	// 用户名和密码的限定长度
-	public static final int USERNAME_LENGTH_MIN = 6;
-	public static final int USERNAME_LENGTH_MAX = 12;
-	public static final int PASSWORD_LENGTH_MIN = 6;
-	public static final int PASSWORD_LENGTH_MAX = 12;
-	// Token有效时长
-	public static final int TIME_LENGTH_YEAR = 1;
-	public static final int TIME_LENGTH_MONTH = 0;
-	public static final int TIME_LENGTH_DAY = 30;
-	// 点赞增加相应标签兴趣权重数值
-	public static final int LIKE_INTEREST_VARIATION = 5;
-	// 收藏增加相应标签兴趣权重数值
-	public static final int BOOKMARK_INTEREST_VARIATION = 15;
 
 	// 注册检查
 	public static String registerCheck(User user) {
@@ -65,8 +52,8 @@ public class UserService {
 		}
 
 		// 用户名长度不对
-		if (user.getUsername().length() < USERNAME_LENGTH_MIN
-				|| user.getUsername().length() > USERNAME_LENGTH_MAX) {
+		if (user.getUsername().length() < Config.USERNAME_LENGTH_MIN
+				|| user.getUsername().length() > Config.USERNAME_LENGTH_MAX) {
 			return "0103";
 		}
 
@@ -76,8 +63,8 @@ public class UserService {
 		}
 
 		// 密码长度不对
-		if (user.getPasswordHash().length() < PASSWORD_LENGTH_MIN
-				|| user.getPasswordHash().length() > PASSWORD_LENGTH_MAX) {
+		if (user.getPasswordHash().length() < Config.PASSWORD_LENGTH_MIN
+				|| user.getPasswordHash().length() > Config.PASSWORD_LENGTH_MAX) {
 			return "0106";
 		}
 
@@ -206,9 +193,9 @@ public class UserService {
 		token.setToken(UUID.randomUUID().toString());
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(new Date().getTime());
-		calendar.add(Calendar.YEAR, TIME_LENGTH_YEAR);
-		calendar.add(Calendar.MONTH, TIME_LENGTH_MONTH);
-		calendar.add(Calendar.DAY_OF_YEAR, TIME_LENGTH_DAY);
+		calendar.add(Calendar.YEAR, Config.TIME_LENGTH_YEAR);
+		calendar.add(Calendar.MONTH, Config.TIME_LENGTH_MONTH);
+		calendar.add(Calendar.DAY_OF_YEAR, Config.TIME_LENGTH_DAY);
 		Timestamp tokenDeadline = new Timestamp(calendar.getTimeInMillis());
 		token.setTokenDeadline(tokenDeadline);
 		return token;
@@ -249,7 +236,7 @@ public class UserService {
 				keyword.setId(id);
 			}
 			System.out.println(article.getContent());
-			article.setRead(0);
+			article.setReadNumber(0);
 			article.setKeywords(keywords);
 			articleDAO.save(article);
 		} catch (Exception e) {
@@ -281,7 +268,7 @@ public class UserService {
 		for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
 			Keyword keyword = (Keyword) iterator.next();
 			setInterest(userId, keyword.getTag().getTagId(),
-					LIKE_INTEREST_VARIATION);
+					Config.LIKE_INTEREST_VARIATION);
 		}
 		return true;
 	}
@@ -332,7 +319,7 @@ public class UserService {
 		for (Iterator iterator = keywords.iterator(); iterator.hasNext();) {
 			Keyword keyword = (Keyword) iterator.next();
 			setInterest(userId, keyword.getTag().getTagId(),
-					BOOKMARK_INTEREST_VARIATION);
+					Config.BOOKMARK_INTEREST_VARIATION);
 		}
 		return true;
 	}

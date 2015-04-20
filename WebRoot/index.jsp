@@ -57,7 +57,7 @@
 		$("#bookmark").click(function() {
 			var request = new Object();
 			request.token = token;
-			request.articleId = 26;
+			request.articleId = 31;
 			$("#p").html(JSON.stringify(request));
 			$.ajax({
 				url : "api/user/bookmark",
@@ -78,7 +78,7 @@
 			request.token = token;
 			var likeId = new Object();
 			likeId.userUserId = token.userId;
-			likeId.articleArticleId = 22;
+			likeId.articleArticleId = 31;
 			request.likeId = likeId;
 			$("#p").html(JSON.stringify(request));
 			$.ajax({

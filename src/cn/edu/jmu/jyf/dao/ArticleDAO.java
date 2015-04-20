@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.edu.jmu.jyf.bean.Article;
+import cn.edu.jmu.jyf.config.Config;
 
 /**
  * A data access object (DAO) providing persistence and search support for
@@ -141,32 +142,6 @@ public class ArticleDAO {
 		}
 	}
 
-	public List getNew(Integer amount) {
-		try {
-			String queryString = "from Article as article order by article.uploadDateTime desc";
-			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setFirstResult(0);
-			queryObject.setMaxResults(amount);
-			return queryObject.list();
-		} catch (RuntimeException re) {
-			log.error("get new failed", re);
-			throw re;
-		}
-	}
-
-	public List getHot(Integer amount) {
-		try {
-			String queryString = "from Article as article order by article.likes.size desc";
-			Query queryObject = getCurrentSession().createQuery(queryString);
-			queryObject.setFirstResult(0);
-			queryObject.setMaxResults(amount);
-			return queryObject.list();
-		} catch (RuntimeException re) {
-			log.error("get hot failed", re);
-			throw re;
-		}
-	}
-
 	public Article merge(Article detachedInstance) {
 		log.debug("merging Article instance");
 		try {
@@ -206,4 +181,37 @@ public class ArticleDAO {
 	public static ArticleDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (ArticleDAO) ctx.getBean("ArticleDAO");
 	}
+
+	public List getNew(Integer amount) {
+		try {
+			String queryString = "from Article as article order by article.uploadDateTime desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setFirstResult(0);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("get new failed", re);
+			throw re;
+		}
+	}
+
+	public List getHot(Integer amount, Integer begin) {
+		try {
+			String queryString = "from Article as article order by"
+					+ " ((article.likes.size*?+article.bookmarks.size*?+"
+					+ "article.readNumber*?)*TO_DAYS(article.uploadDateTime)*?) desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setInteger(0, Config.WEIGHT_OF_LIKE_IN_ARTICLE);
+			queryObject.setInteger(1, Config.WEIGHT_OF_BOOKMARK_IN_ARTICLE);
+			queryObject.setInteger(2, Config.WEIGHT_OF_READNUMBER_IN_ARTICLE);
+			queryObject.setFloat(3, Config.WEIGHT_OF_TIME_IN_HOT);
+			queryObject.setFirstResult(begin - 1);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("get hot failed", re);
+			throw re;
+		}
+	}
+
 }
