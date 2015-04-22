@@ -1,6 +1,6 @@
 package cn.edu.jmu.jyf.controller;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class CommonController {
 	@ResponseBody
 	public ArticleModel getArticleById(
 			@PathVariable("articleId") Integer articleId) {
-		ArticleModel articleModel = CommonService.getArticleModel(articleId);
+		ArticleModel articleModel = CommonService.getArticle(articleId);
 		return articleModel;
 	}
 
@@ -39,8 +39,7 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "/api/article/list/new/{amount}", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ArticleSummary> getNewArticleList(
-			@PathVariable("amount") Integer amount) {
+	public List<ArticleSummary> getNew(@PathVariable("amount") Integer amount) {
 		if (amount <= 0) {
 			return null;
 		}
@@ -56,8 +55,7 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "/api/article/list/hot/{amount}/{begin}", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ArticleSummary> getHotArticleList(
-			@PathVariable("amount") Integer amount,
+	public List<ArticleSummary> getHot(@PathVariable("amount") Integer amount,
 			@PathVariable("begin") Integer begin) {
 		if (amount <= 0 || begin <= 0) {
 			return null;
@@ -87,10 +85,110 @@ public class CommonController {
 	 */
 	@RequestMapping(value = "/api/article/list/before/{time}/{amount}", method = RequestMethod.GET)
 	@ResponseBody
-	public List<ArticleSummary> getHistoryArticleList(
-			@PathVariable("time") Timestamp time,
+	public List<ArticleSummary> getPast(@PathVariable("time") Long time,
 			@PathVariable("amount") Integer amount) {
-		return null;
+		if (time <= 0 || amount <= 0) {
+			return null;
+		}
+		return CommonService.getPast(time, amount);
+	}
 
+	/**
+	 * 按文章权重获取文章列表
+	 * 
+	 * @param amount
+	 *            获取记录数
+	 * @param begin
+	 *            从第N条记录开始获取
+	 * @return 按照文章权重排序的文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/quality/{amount}/{begin}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getByQuality(
+			@PathVariable("amount") Integer amount,
+			@PathVariable("begin") Integer begin) {
+		if (amount <= 0 || begin <= 0) {
+			return null;
+		}
+		return CommonService.getByQuality(amount, begin);
+	}
+
+	/**
+	 * 按照关键字获取某时间点以前的N篇文章列表
+	 * 
+	 * @param tagId标签编号
+	 * @param amount总数
+	 * @param time时间点
+	 * @return文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/keyword/{tagId}/before/{time}/{amount}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getByKeyword(
+			@PathVariable("tagId") Integer tagId,
+			@PathVariable("amount") Integer amount,
+			@PathVariable("time") Long time) {
+		if (amount <= 0 || time <= 0) {
+			return null;
+		}
+		return CommonService.getByKeyword(tagId, amount, time);
+	}
+
+	/**
+	 * 按照关键字获取最新N篇文章
+	 * 
+	 * @param tagId标签编号
+	 * @param amount总数
+	 * @return文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/keyword/{tagId}/{amount}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getNewByKeyword(
+			@PathVariable("tagId") Integer tagId,
+			@PathVariable("amount") Integer amount) {
+		if (amount <= 0) {
+			return null;
+		}
+		Long time = new Date().getTime();
+		return CommonService.getByKeyword(tagId, amount, time);
+	}
+
+	/**
+	 * 按照关键字获取热门文章
+	 * 
+	 * @param tagId标签编号
+	 * @param amount获取数量
+	 * @param begin从第几条记录开始获取
+	 * @return文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/keyword/{tagId}/hot/{amount}/{begin}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getHotByKeword(
+			@PathVariable("tagId") Integer tagId,
+			@PathVariable("amount") Integer amount,
+			@PathVariable("begin") Integer begin) {
+		if (amount <= 0 || begin <= 0) {
+			return null;
+		}
+		return CommonService.getHotByKeyword(tagId, amount, begin);
+	}
+
+	/**
+	 * 按照关键字和文章权重排序获取文章
+	 * 
+	 * @param tagId标签编号
+	 * @param amount获取总数
+	 * @param begin从第几条数据开始获取
+	 * @return文章列表
+	 */
+	@RequestMapping(value = "/api/article/list/keyword/{tagId}/quality/{amount}/{begin}", method = RequestMethod.GET)
+	@ResponseBody
+	public List<ArticleSummary> getByKewordAndQuality(
+			@PathVariable("tagId") Integer tagId,
+			@PathVariable("amount") Integer amount,
+			@PathVariable("begin") Integer begin) {
+		if (amount <= 0 || begin <= 0) {
+			return null;
+		}
+		return CommonService.getByKeywordAndQuality(tagId, amount, begin);
 	}
 }

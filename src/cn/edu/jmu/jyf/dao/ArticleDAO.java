@@ -2,6 +2,7 @@ package cn.edu.jmu.jyf.dao;
 
 import static org.hibernate.criterion.Example.create;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.hibernate.LockOptions;
@@ -184,7 +185,7 @@ public class ArticleDAO {
 
 	public List getNew(Integer amount) {
 		try {
-			String queryString = "from Article as article order by article.uploadDateTime desc";
+			String queryString = "from Article as article where article.isHidden=0 order by article.uploadDateTime desc";
 			Query queryObject = getCurrentSession().createQuery(queryString);
 			queryObject.setFirstResult(0);
 			queryObject.setMaxResults(amount);
@@ -197,7 +198,7 @@ public class ArticleDAO {
 
 	public List getHot(Integer amount, Integer begin) {
 		try {
-			String queryString = "from Article as article order by"
+			String queryString = "from Article as article where article.isHidden=0 order by"
 					+ " ((article.likes.size*?+article.bookmarks.size*?+"
 					+ "article.readNumber*?)*TO_DAYS(article.uploadDateTime)*?) desc";
 			Query queryObject = getCurrentSession().createQuery(queryString);
@@ -211,6 +212,37 @@ public class ArticleDAO {
 		} catch (RuntimeException re) {
 			log.error("get hot failed", re);
 			throw re;
+		}
+	}
+
+	public List getByQuality(Integer amount, Integer begin) {
+		try {
+			String queryString = "from Article as article where article.isHidden=0 order by"
+					+ " (article.likes.size*?+article.bookmarks.size*?+"
+					+ "article.readNumber*?) desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setInteger(0, Config.WEIGHT_OF_LIKE_IN_ARTICLE);
+			queryObject.setInteger(1, Config.WEIGHT_OF_BOOKMARK_IN_ARTICLE);
+			queryObject.setInteger(2, Config.WEIGHT_OF_READNUMBER_IN_ARTICLE);
+			queryObject.setFirstResult(begin - 1);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("get hot failed", re);
+			throw re;
+		}
+	}
+
+	public List getPastArticleList(Long time, Integer amount) {
+		try {
+			String queryString = "from Article as a where a.isHidden=0 and a.uploadDateTime<? order by a.uploadDateTime desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setTimestamp(0, new Date(time));
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 

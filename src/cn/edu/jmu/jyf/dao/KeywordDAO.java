@@ -1,18 +1,21 @@
 package cn.edu.jmu.jyf.dao;
 
+import static org.hibernate.criterion.Example.create;
+
+import java.sql.Date;
 import java.util.List;
+
 import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import static org.hibernate.criterion.Example.create;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import cn.edu.jmu.jyf.bean.Keyword;
-import cn.edu.jmu.jyf.bean.KeywordId;
+import cn.edu.jmu.jyf.config.Config;
 
 /**
  * A data access object (DAO) providing persistence and search support for
@@ -158,5 +161,62 @@ public class KeywordDAO {
 
 	public static KeywordDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (KeywordDAO) ctx.getBean("KeywordDAO");
+	}
+
+	public List getByKeyword(Integer tagId, Long time, Integer amount) {
+		try {
+			String queryString = "from Keyword as k where k.tag.tagId=? "
+					+ "and k.article.isHidden=0 and k.article.uploadDateTime<? "
+					+ "order by k.article.uploadDateTime desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setInteger(0, tagId);
+			queryObject.setTimestamp(1, new Date(time));
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public List getHotByKeyword(Integer tagId, Integer amount, Integer begin) {
+		try {
+			String queryString = "from Keyword as k where k.tag.tagId=? "
+					+ "and k.article.isHidden=0 order by ((k.article.likes.size*?"
+					+ "+k.article.bookmarks.size*?+ k.article.readNumber*?)"
+					+ "*TO_DAYS(k.article.uploadDateTime)*?) desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setInteger(0, tagId);
+			queryObject.setInteger(1, Config.WEIGHT_OF_LIKE_IN_ARTICLE);
+			queryObject.setInteger(2, Config.WEIGHT_OF_BOOKMARK_IN_ARTICLE);
+			queryObject.setInteger(3, Config.WEIGHT_OF_READNUMBER_IN_ARTICLE);
+			queryObject.setFloat(4, Config.WEIGHT_OF_TIME_IN_HOT);
+			queryObject.setFirstResult(begin - 1);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public List getByKeywordAndQuality(Integer tagId, Integer amount,
+			Integer begin) {
+		try {
+			String queryString = "from Keyword as k where k.tag.tagId=? and k.article.isHidden=0 order by"
+					+ " (k.article.likes.size*?+k.article.bookmarks.size*?+"
+					+ "k.article.readNumber*?) desc";
+			Query queryObject = getCurrentSession().createQuery(queryString);
+			queryObject.setInteger(0, tagId);
+			queryObject.setInteger(1, Config.WEIGHT_OF_LIKE_IN_ARTICLE);
+			queryObject.setInteger(2, Config.WEIGHT_OF_BOOKMARK_IN_ARTICLE);
+			queryObject.setInteger(3, Config.WEIGHT_OF_READNUMBER_IN_ARTICLE);
+			queryObject.setFirstResult(begin - 1);
+			queryObject.setMaxResults(amount);
+			return queryObject.list();
+		} catch (RuntimeException re) {
+			log.error("get failed", re);
+			throw re;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package cn.edu.jmu.jyf.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.edu.jmu.jyf.bean.Article;
 import cn.edu.jmu.jyf.bean.User;
+import cn.edu.jmu.jyf.model.ArticleSummary;
 import cn.edu.jmu.jyf.model.Token;
 import cn.edu.jmu.jyf.requestModel.BookmarkModel;
 import cn.edu.jmu.jyf.requestModel.LikeModel;
@@ -129,6 +132,11 @@ public class UserController {
 			return new ErrorResponse("0302", "Token无效");
 		}
 		Article article = uploadArticleModel.getArticle();
+		if (article.getContent() == null || article.getTitle() == null
+				|| article.getKeywords() == null
+				|| article.getKeywords().size() == 0) {
+			return new ErrorResponse("0304", "缺失必要信息。");
+		}
 		if (!UserService.saveArticle(token.getUserId(), article)) {
 			return new ErrorResponse("0303", "存入数据库失败。");
 		}
@@ -178,6 +186,15 @@ public class UserController {
 			return new ErrorResponse("0503", "该文章已经收藏。");
 		}
 		return new ResponseModel("0501");
+	}
+
+	@RequestMapping(value = "/api/article/list/recommend", method = RequestMethod.POST)
+	@ResponseBody
+	public List<ArticleSummary> recommend(@RequestBody Token token) {
+		if (UserService.verifyToken(token)) {
+			return null;
+		}
+		return null;
 	}
 
 }

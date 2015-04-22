@@ -29,6 +29,7 @@ import cn.edu.jmu.jyf.dao.BookmarkDAO;
 import cn.edu.jmu.jyf.dao.InterestDAO;
 import cn.edu.jmu.jyf.dao.LikeDAO;
 import cn.edu.jmu.jyf.dao.UserDAO;
+import cn.edu.jmu.jyf.model.ArticleSummary;
 import cn.edu.jmu.jyf.model.Token;
 import cn.edu.jmu.jyf.util.Md5Util;
 import cn.edu.jmu.jyf.util.SpringContextUtil;
@@ -208,7 +209,7 @@ public class UserService {
 		UserDAO userDAO = SpringContextUtil.getBean("UserDAO");
 		User user = userDAO.findById(token.getUserId());
 		long time = new Date().getTime();
-		if (user.getTokenDeadline().getTime() - time <= 0) {
+		if (user.getIsBanned() || user.getTokenDeadline().getTime() - time <= 0) {
 			return false;
 		} else if (user.getToken().equals(token.getToken())) {
 			return true;
@@ -322,5 +323,10 @@ public class UserService {
 					Config.BOOKMARK_INTEREST_VARIATION);
 		}
 		return true;
+	}
+
+	public static List<ArticleSummary> recommend(Integer userId) {
+		return null;
+
 	}
 }
