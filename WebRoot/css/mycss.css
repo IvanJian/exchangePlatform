@@ -1,0 +1,19 @@
+.aimg {
+	width: 160px;
+	height: 100px
+}
+
+.tagimg {
+	width: 40px;
+	height: 40px
+}
+
+.navPad {
+	padding-top: 70px;
+}
+
+.loginTop {
+	background: #0078d8
+		url(//static.zhihu.com/static/img/201304_sign/light.png) center 0
+		no-repeat
+}

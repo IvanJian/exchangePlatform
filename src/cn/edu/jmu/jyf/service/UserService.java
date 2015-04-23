@@ -132,7 +132,7 @@ public class UserService {
 	// 从User实例中获取Token对象
 	public static Token getTokenObject(User user) {
 		Token token = new Token(user.getUserId(), user.getToken(),
-				user.getTokenDeadline());
+				user.getName(), user.getTokenDeadline());
 		return token;
 	}
 
