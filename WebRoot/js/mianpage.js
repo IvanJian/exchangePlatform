@@ -184,10 +184,46 @@
 		}
 		
 		function nav(){
-			if(loginState==false){
+			if(loginState==false||typeof($.cookie("name"))=="undefined"){
 				$("#profile").hide();
 				$("#myarticles").hide();
 				$("#signout").html("登录");
 				$("#signout").attr("href","http://"+ window.location.host+ "/exchangePlatform/signup");
 			}
+		}
+		
+		function uploadArticle(token,title,image,content,tagIdList){
+			var r=new Object();
+			var token=new Object();
+			token.userId=$.cookie("userId");
+			token.token=$.cookie("token");
+			var article = new Object();
+			article.title=title;
+			article.content=content;
+			article.image=image;
+			var keywords = new Array();
+			for(var i=0;i<tagIdList.length;i++){
+				var tag = new Object();
+				tag.tagId=tagIdList[i];
+				keywords[i] = new Object();
+				keywords[i].tag=tag;
+			}
+			article.keywords = keywords;
+			var request = new Object();
+			request.token = token;
+			request.article = article;
+			$.ajax({
+				url : "api/user/uploadarticle",
+				type : "POST",
+				async: false,
+				data : JSON.stringify(request),
+				contentType : 'application/json;charset=UTF-8',
+				success : function(data) {
+					r=data;
+				},
+				error : function() {
+					alert("Error.");
+				}
+			});
+			return r;
 		}

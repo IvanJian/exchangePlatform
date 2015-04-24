@@ -22,4 +22,9 @@ public class WebController {
 	public ModelAndView getArticle() {
 		return new ModelAndView("signup");
 	}
+
+	@RequestMapping(value = "/write", method = RequestMethod.GET)
+	public ModelAndView write() {
+		return new ModelAndView("write");
+	}
 }

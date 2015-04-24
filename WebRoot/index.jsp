@@ -60,7 +60,7 @@
 				<button type="submit" class="btn btn-default">搜索</button>
 			</form>
 			<ul class="nav navbar-nav">
-				<li><a href="#">开始撰写...</a></li>
+				<li><a href="/exchangePlatform/write">开始撰写...</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown"><a href="#" class="dropdown-toggle"

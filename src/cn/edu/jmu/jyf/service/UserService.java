@@ -236,7 +236,6 @@ public class UserService {
 				id.setTagTagId(keyword.getTag().getTagId());
 				keyword.setId(id);
 			}
-			System.out.println(article.getContent());
 			article.setReadNumber(0);
 			article.setKeywords(keywords);
 			articleDAO.save(article);
