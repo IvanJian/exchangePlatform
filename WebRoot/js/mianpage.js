@@ -1,7 +1,48 @@
 		var last;//��λ��������
 		var hotLast = 1;
 		var classicLast = 1;
+		function loadTags(){
+			$.get("api/tags",
+					function(tags) {
+						$("#tags").html($("#tagsTmpl").render(tags));
+					});
+		}
+		
+		function loadKeyword(tagId){
+			$.get("api/article/list/keyword/"+tagId+"/8",
+				function(articles) {
+					for (var i = 0; i < articles.length; i++) {
+						var t = new Date();
+						t.setTime(parseInt(articles[i].uploadDateTime, 10));
+						articles[i].time = new String(t.toLocaleString());
+						last = articles[i].uploadDateTime;
+					}
+					$("#new-articles").html($("#articlesTmpl").render(articles));
+				});
+				$.get("api/article/list/keyword/"+tagId+"/hot/8/1",
+				function(articles) {
+					for (var i = 0; i < articles.length; i++) {
+						var t = new Date();
+						t.setTime(parseInt(articles[i].uploadDateTime, 10));
+						articles[i].time = new String(t.toLocaleString());
+						hotLast += 1;
+					}
+					$("#hot-articles").html($("#articlesTmpl").render(articles));
+				});
+				$.get("api/article/list/keyword/"+tagId+"/quality/8/1",
+				function(articles) {
+					for (var i = 0; i < articles.length; i++) {
+						var t = new Date();
+						t.setTime(parseInt(articles[i].uploadDateTime, 10));
+						articles[i].time = new String(t.toLocaleString());
+						classicLast += 1;
+					}
+					$("#classic-articles").html($("#articlesTmpl").render(articles));
+				});
+		}
+		
 		function loadmain() {
+			loadTags();
 			$.get("api/article/list/new/8",
 			function(articles) {
 				for (var i = 0; i < articles.length; i++) {
@@ -11,10 +52,6 @@
 					last = articles[i].uploadDateTime;
 				}
 				$("#new-articles").html($("#articlesTmpl").render(articles));
-			});
-			$.get("api/tags",
-			function(tags) {
-				$("#tags").html($("#tagsTmpl").render(tags));
 			});
 			$.get("api/article/list/hot/8/1",
 			function(articles) {
@@ -74,6 +111,55 @@
 			function(articles) {
 				if (articles.length == 0 || articles.length < 5) {
 					$("#loadClassic").remove();
+				}
+				for (var i = 0; i < articles.length; i++) {
+					var t = new Date();
+					t.setTime(parseInt(articles[i].uploadDateTime, 10));
+					articles[i].time = new String(t.toLocaleString());
+					classicLast+=1;
+				}
+				if (articles.length != 0) $("#classic-articles").append($("#articlesTmpl").render(articles));
+			});
+		});
+		
+		$("#loadNewByTag").click(function() {
+			var url="api/article/list/keyword/"+$("#tagId").val()+"/before/" + last + "/5";
+			$.get(url,
+			function(articles) {
+				if (articles.length == 0 || articles.length < 5) {
+					$("#loadNewByTag").remove();
+				}
+				for (var i = 0; i < articles.length; i++) {
+					var t = new Date();
+					t.setTime(parseInt(articles[i].uploadDateTime, 10));
+					articles[i].time = new String(t.toLocaleString());
+					last = articles[i].uploadDateTime;
+				}
+				if (articles.length != 0) $("#new-articles").append($("#articlesTmpl").render(articles));
+			});
+		});
+		$("#loadHotByTag").click(function() {
+			var url="api/article/list/keyword/"+$("#tagId").val()+"/hot/5/"+hotLast;
+			$.get(url,
+			function(articles) {
+				if (articles.length == 0 || articles.length < 5) {
+					$("#loadHotByTag").remove();
+				}
+				for (var i = 0; i < articles.length; i++) {
+					var t = new Date();
+					t.setTime(parseInt(articles[i].uploadDateTime, 10));
+					articles[i].time = new String(t.toLocaleString());
+					hotLast+=1;
+				}
+				if (articles.length != 0) $("#hot-articles").append($("#articlesTmpl").render(articles));
+			});
+		});
+		$("#loadClassicByTag").click(function() {
+			var url="api/article/list/keyword/"+$("#tagId").val()+"/quality/5/"+classicLast;
+			$.get(url,
+			function(articles) {
+				if (articles.length == 0 || articles.length < 5) {
+					$("#loadClassicByTag").remove();
 				}
 				for (var i = 0; i < articles.length; i++) {
 					var t = new Date();
@@ -227,3 +313,10 @@
 			});
 			return r;
 		}
+		
+		function isEmpty( obj ) { 
+			for ( var name in obj ) { 
+			return false; 
+			} 
+			return true; 
+			} 

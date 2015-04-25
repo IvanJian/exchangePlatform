@@ -92,7 +92,8 @@
 
 	<div class="container">
 		<div class="page-header">
-  			<h1>Find社区        <small id="tagName">在集大分享你的知识、经验和见解</small></h1>
+  			<h1>Find-话题        <small id="tagName">${tagName }</small></h1>
+  			<input type="hidden" id="tagId" value="${tagId }"/>
 		</div>
 		<div class="row">
 			<div class="col-md-7 col-md-offset-1">
@@ -101,11 +102,11 @@
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" role="tablist">
 						<li role="presentation" class="active"><a href="#new"
-							aria-controls="new" role="tab" data-toggle="tab">最新投稿</a></li>
+							aria-controls="new" role="tab" data-toggle="tab">最新</a></li>
 						<li role="presentation"><a href="#hot" aria-controls="hot"
-							role="tab" data-toggle="tab">全站热门</a></li>
+							role="tab" data-toggle="tab">热门</a></li>
 						<li role="presentation"><a href="#classic"
-							aria-controls="classic" role="tab" data-toggle="tab">精华内容</a></li>
+							aria-controls="classic" role="tab" data-toggle="tab">精华</a></li>
 					</ul>
 
 					<!-- Tab panes -->
@@ -114,7 +115,7 @@
 							<br>
 							<div id="new-articles"></div>
 							<div class="span7 text-center">
-								<button class="btn btn-default" type="button" id="loadNew">加载更多内容</button>
+								<button class="btn btn-default" type="button" id="loadNewByTag">加载更多内容</button>
 								<hr />
 							</div>
 							<script id="articlesTmpl" type="text/x-jsrender">
@@ -162,7 +163,7 @@
 							<br>
 							<div id="hot-articles"></div>
 							<div class="span7 text-center">
-								<button class="btn btn-default" type="button" id="loadHot">加载更多内容</button>
+								<button class="btn btn-default" type="button" id="loadHotByTag">加载更多内容</button>
 								<hr />
 							</div>
 							<script id="articlesTmpl" type="text/x-jsrender">
@@ -211,7 +212,7 @@
 							<br>
 							<div id="classic-articles"></div>
 							<div class="span7 text-center">
-								<button class="btn btn-default" type="button" id="loadClassic">加载更多内容</button>
+								<button class="btn btn-default" type="button" id="loadClassicByTag">加载更多内容</button>
 								<hr />
 							</div>
 							<script id="articlesTmpl" type="text/x-jsrender">
@@ -292,7 +293,8 @@
 	<script src="js/mianpage.js"></script>
 	<script>
 		$(document).ready(function(){
-			loadmain();
+			loadTags();
+			loadKeyword("${tagId }");
 			nav();
 		});
 	</script>

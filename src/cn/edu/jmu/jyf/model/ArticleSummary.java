@@ -105,10 +105,13 @@ public class ArticleSummary {
 			index = 100;
 		}
 		String s = matcher.replaceAll("");
-		// s = s.replaceAll("\\s*|\t|\r|\n", "");
-		// s = s.replaceAll(" ", "");
-		// s = s.replaceAll("\\;", "");
-		s = s.substring(0, index);
+		try {
+			// s = s.replaceAll("\\s*|\t|\r|\n", "");
+			// s = s.replaceAll(" ", "");
+			// s = s.replaceAll("\\;", "");
+			s = s.substring(0, index);
+		} catch (Exception e) {
+		}
 		this.summary = s + "......";
 		for (Iterator iterator = article.getKeywords().iterator(); iterator
 				.hasNext();) {

@@ -1,6 +1,7 @@
 package cn.edu.jmu.jyf.service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -119,7 +120,7 @@ public class UserService {
 		user.setTokenDeadline(token.getTokenDeadline());
 		user.setPasswordHash(Md5Util.getMD5(user.getPasswordHash()));
 		user.setIsBanned(false);
-
+		user.setIcon("/exchangePlatform/images/defaulticon.png");
 		try {
 			userDAO.save(user);
 		} catch (Exception e) {
@@ -327,5 +328,49 @@ public class UserService {
 	public static List<ArticleSummary> recommend(Integer userId) {
 		return null;
 
+	}
+
+	/**
+	 * 获取用户收藏列表
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static List<ArticleSummary> getBookmarks(Integer userId) {
+		UserDAO userDAO = SpringContextUtil.getBean("UserDAO");
+		User user = userDAO.findById(userId);
+		List<ArticleSummary> articleSummaries = new ArrayList<ArticleSummary>();
+		Set<Bookmark> bookmarks = user.getBookmarks();
+		for (Iterator iterator = bookmarks.iterator(); iterator.hasNext();) {
+			Bookmark bookmark = (Bookmark) iterator.next();
+			articleSummaries.add(new ArticleSummary(bookmark.getArticle()));
+		}
+		return articleSummaries;
+	}
+
+	public static boolean removeBookmark(BookmarkId bId) {
+		BookmarkDAO bookmarkDAO = SpringContextUtil.getBean("BookmarkDAO");
+		Bookmark bookmark = bookmarkDAO.findById(bId);
+		if (bookmark == null) {
+			return false;
+		}
+		try {
+			bookmarkDAO.delete(bookmark);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean setIcon(Integer userId, String icon) {
+		try {
+			UserDAO userDAO = SpringContextUtil.getBean("UserDAO");
+			User user = userDAO.findById(userId);
+			user.setIcon(icon);
+			userDAO.merge(user);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 }

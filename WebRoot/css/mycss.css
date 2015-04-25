@@ -3,9 +3,14 @@
 	height: 100px
 }
 
+.headicon {
+	width: 160px;
+	height: 160px
+}
+
 .tagimg {
-	width: 40px;
-	height: 40px
+	width: 80px;
+	height: 80px
 }
 
 .navPad {

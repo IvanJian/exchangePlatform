@@ -131,6 +131,15 @@ public class CommonService {
 		return tagList;
 	}
 
+	public static Tag getTagById(Integer tagId) {
+		TagDAO tagDAO = SpringContextUtil.getBean("TagDAO");
+		Tag tag = tagDAO.findById(tagId);
+		if (tag == null) {
+			return null;
+		}
+		return tag;
+	}
+
 	/**
 	 * 获取过往文章列表。
 	 * 

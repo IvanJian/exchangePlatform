@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.edu.jmu.jyf.bean.Article;
+import cn.edu.jmu.jyf.bean.BookmarkId;
 import cn.edu.jmu.jyf.bean.User;
 import cn.edu.jmu.jyf.model.ArticleSummary;
+import cn.edu.jmu.jyf.model.ProfileModel;
 import cn.edu.jmu.jyf.model.Token;
 import cn.edu.jmu.jyf.requestModel.BookmarkModel;
+import cn.edu.jmu.jyf.requestModel.IconModel;
 import cn.edu.jmu.jyf.requestModel.LikeModel;
+import cn.edu.jmu.jyf.requestModel.RemoveBookmarkModel;
 import cn.edu.jmu.jyf.requestModel.UploadArticleModel;
 import cn.edu.jmu.jyf.responseModel.ErrorResponse;
+import cn.edu.jmu.jyf.responseModel.ProfileResponse;
 import cn.edu.jmu.jyf.responseModel.RegisterSuccessResponse;
 import cn.edu.jmu.jyf.responseModel.ResponseModel;
 import cn.edu.jmu.jyf.responseModel.UserAuthenticationResponse;
@@ -197,4 +202,55 @@ public class UserController {
 		return null;
 	}
 
+	@RequestMapping(value = "/api/user/get/bookmarks", method = RequestMethod.POST)
+	@ResponseBody
+	public Object getBookmarks(@RequestBody Token token) {
+		if (!UserService.verifyToken(token)) {
+			return new ResponseModel("0602");
+		}
+		List<ArticleSummary> articleSummaries = UserService.getBookmarks(token
+				.getUserId());
+		if (articleSummaries.size() == 0) {
+			return new ResponseModel("0603");
+		}
+		return articleSummaries;
+	}
+
+	@RequestMapping(value = "/api/user/remove/bookmark", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseModel removeBookmark(@RequestBody RemoveBookmarkModel rModel) {
+		Token token = rModel.getToken();
+		if (!UserService.verifyToken(token)) {
+			return new ErrorResponse("0702", "登录过期。");
+		}
+		BookmarkId bId = new BookmarkId(token.getUserId(),
+				rModel.getArticleId());
+		if (UserService.removeBookmark(bId)) {
+			return new ResponseModel("0701");
+		}
+		return new ErrorResponse("0703", "删除失败");
+	}
+
+	@RequestMapping(value = "/api/user/profile", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseModel getProfile(@RequestBody Token token) {
+		if (!UserService.verifyToken(token)) {
+			return new ErrorResponse("0802", "登录过期");
+		}
+		ProfileModel profileModel = new ProfileModel(token.getUserId());
+		return new ProfileResponse("0801", profileModel);
+	}
+
+	@RequestMapping(value = "/api/user/seticon", method = RequestMethod.POST)
+	@ResponseBody
+	public ResponseModel setIcon(@RequestBody IconModel iconModel) {
+		if (!UserService.verifyToken(iconModel.getToken())) {
+			return new ErrorResponse("0902", "登录过期");
+		}
+		if (UserService.setIcon(iconModel.getToken().getUserId(),
+				iconModel.getIcon())) {
+			return new ResponseModel("0901");
+		}
+		return new ErrorResponse("0903", "设置出错");
+	}
 }

@@ -24,7 +24,7 @@
 <link rel="stylesheet"
 	href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="http://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="js/jquery-2.1.3.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <!-- 插件 -->
@@ -80,8 +80,8 @@
 					</script> <span class="caret"></span>
 				</a>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href="#" id="profile">我的资料</a></li>
-						<li><a href="#" id="myarticles">我的收藏</a></li>
+						<li><a href="/exchangePlatform/my/profile" id="profile">我的资料</a></li>
+						<li><a href="my/bookmarks" id="myarticles">我的收藏</a></li>
 						<li class="divider"></li>
 						<li><a href="javascript:;" id="signout" onclick="signout()">退出登录</a></li>
 					</ul></li>
@@ -118,6 +118,7 @@
 						<hr />
 						<h5>为了文章的美观，从网络复制的内容建议您使用清理HTML代码。</h5>
 						<h5>因为版式不同，实际显示效果可能与编辑结果有所差别。</h5>
+						<h5>如果您的图片显示不正常，可能是因为引用地址做了防盗链处理，您可以从本地上传。</h5>
 						<textarea id="editor_id" name="content"
 							style="width:620px;height:450px;">
 						</textarea>
@@ -130,11 +131,16 @@
 	</div>
 	<script src="js/mianpage.js"></script>
 	<script>
+		if(!$.cookie("userId")){
+			alert("您还没有登录，请登录后再执行操作。");
+			url="http://"+ window.location.host+ "/exchangePlatform/signup";
+			window.location.replace(url);
+		}
 		var editor;
 		var image;
 		KindEditor.ready(function(K) {
 			editor = K.create('textarea[name="content"]', {
-				allowFileManager: true
+				allowFileManager: false,
 			});
 			K('#upload').click(function() {
 				editor.loadPlugin('image',

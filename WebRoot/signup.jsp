@@ -24,7 +24,7 @@
 <link rel="stylesheet"
 	href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
-<script src="http://code.jquery.com/jquery-1.11.2.js"></script>
+<script src="js/jquery-2.1.3.min.js"></script>
 <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
 <script src="http://cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <!-- 插件 -->
@@ -137,9 +137,9 @@
 						if(data.responseCode=="0101"){
 							var cookieTime= new Date();
 							cookieTime.setTime(parseInt(data.token.tokenDeadline,10));
-							$.cookie("userId",data.token.userId+"",{expires:cookieTime, path: '/' });
-							$.cookie("token",data.token.token,{expires:cookieTime, path: '/' });
-							$.cookie("name",data.token.name,{expires:cookieTime, path: '/' });
+							$.cookie("userId",data.token.userId+"",{expires:cookieTime });
+							$.cookie("token",data.token.token,{expires:cookieTime});
+							$.cookie("name",data.token.name,{expires:cookieTime});
 							url="http://"+ window.location.host+ "/exchangePlatform";
 							window.location.replace(url);
 						}
