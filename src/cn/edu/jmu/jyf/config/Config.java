@@ -30,7 +30,7 @@ public class Config {
 
 	/*
 	 * 时间对文章热门的影响程度参数，在筛选热门文章时，会参考文章本身权重和发表时间。 文章热门度=K*发布时间*文章权重
-	 * 每过一天，文章权重便会下降10%。请维护人员根据运营情况修改该数值。
+	 * 发布时间只按照天数计算。请维护人员根据运营情况修改该数值。
 	 */
-	public static final Float WEIGHT_OF_TIME_IN_HOT = Float.valueOf("0.1");
+	public static final Float WEIGHT_OF_TIME_IN_HOT = Float.valueOf("2");
 }

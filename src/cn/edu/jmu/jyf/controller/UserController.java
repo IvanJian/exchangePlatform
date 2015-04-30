@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import cn.edu.jmu.jyf.bean.Article;
@@ -15,6 +14,7 @@ import cn.edu.jmu.jyf.bean.User;
 import cn.edu.jmu.jyf.model.ArticleSummary;
 import cn.edu.jmu.jyf.model.ProfileModel;
 import cn.edu.jmu.jyf.model.Token;
+import cn.edu.jmu.jyf.requestModel.AuthenticateModel;
 import cn.edu.jmu.jyf.requestModel.BookmarkModel;
 import cn.edu.jmu.jyf.requestModel.IconModel;
 import cn.edu.jmu.jyf.requestModel.LikeModel;
@@ -91,14 +91,15 @@ public class UserController {
 	 * 授权接口
 	 * 
 	 * @param username
-	 * @param password
+	 * @param passwordHash
 	 * @return
 	 */
 	@RequestMapping(value = "/api/user/authenticate", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseModel authenticate(
-			@RequestParam(defaultValue = "") String username,
-			@RequestParam(value = "passwordHash", defaultValue = "") String passwordHash) {
+			@RequestBody AuthenticateModel authenticateModel) {
+		String username = authenticateModel.getUsername();
+		String passwordHash = authenticateModel.getPasswordHash();
 		// 用户名或密码为空
 		if (username.equals("") || passwordHash.equals("")) {
 			ErrorResponse response = new ErrorResponse();

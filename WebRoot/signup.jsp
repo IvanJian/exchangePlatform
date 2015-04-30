@@ -154,21 +154,27 @@
 			$("#login").click(function() {
 				var username = $("#username_login").val();
 				var password = $.md5($("#passwordHash_login").val());
-				$.post("api/user/authenticate", {
-					"username" : username,
-					"passwordHash" : password
-				}, function(data) {
-					if(data.responseCode=="0201"){
-						var cookieTime= new Date();
-						cookieTime.setTime(parseInt(data.token.tokenDeadline,10));
-						$.cookie("userId",data.token.userId+"",{expires:cookieTime});
-						$.cookie("token",data.token.token,{expires:cookieTime});
-						$.cookie("name",data.token.name,{expires:cookieTime});
-						url="http://"+ window.location.host+ "/exchangePlatform";
-						window.location.replace(url);
-					}
-					else{
-						alert(data.message);
+				var u=new Object();
+				u.username=username;
+				u.passwordHash=password;
+				$.ajax({
+					url : "api/user/authenticate",
+					type : "POST",
+					contentType : 'application/json;charset=UTF-8',
+					data: JSON.stringify(u),
+					success:function(data) {
+						if(data.responseCode=="0201"){
+							var cookieTime= new Date();
+							cookieTime.setTime(parseInt(data.token.tokenDeadline,10));
+							$.cookie("userId",data.token.userId+"",{expires:cookieTime});
+							$.cookie("token",data.token.token,{expires:cookieTime});
+							$.cookie("name",data.token.name,{expires:cookieTime});
+							url="http://"+ window.location.host+ "/exchangePlatform";
+							window.location.replace(url);
+						}
+						else{
+							alert(data.message);
+						}
 					}
 				});
 	

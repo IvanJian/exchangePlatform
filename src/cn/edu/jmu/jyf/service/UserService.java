@@ -343,7 +343,9 @@ public class UserService {
 		Set<Bookmark> bookmarks = user.getBookmarks();
 		for (Iterator iterator = bookmarks.iterator(); iterator.hasNext();) {
 			Bookmark bookmark = (Bookmark) iterator.next();
-			articleSummaries.add(new ArticleSummary(bookmark.getArticle()));
+			if (!bookmark.getArticle().getIsHidden()) {
+				articleSummaries.add(new ArticleSummary(bookmark.getArticle()));
+			}
 		}
 		return articleSummaries;
 	}

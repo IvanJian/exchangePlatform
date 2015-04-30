@@ -78,7 +78,7 @@
 				</a>
 					<ul class="dropdown-menu" role="menu">
 						<li><a href="/exchangePlatform/my/profile" id="profile">我的资料</a></li>
-						<li><a href="#" id="myarticles">我的收藏</a></li>
+						<li><a href="/exchangePlatform/my/bookmarks" id="myarticles">我的收藏</a></li>
 						<li class="divider"></li>
 						<li><a href="javascript:;" onclick="signout()"id="signout">退出登录</a></li>
 					</ul></li>
