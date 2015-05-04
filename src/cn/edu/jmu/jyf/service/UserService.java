@@ -375,4 +375,20 @@ public class UserService {
 		}
 		return true;
 	}
+
+	public static String getInterest(Integer userId) {
+		UserDAO userDAO = SpringContextUtil.getBean("UserDAO");
+		User user = userDAO.findById(userId);
+		Set<Interest> interests = user.getInterests();
+		String i = "null";
+		Integer flag = 0;
+		for (Iterator iterator = interests.iterator(); iterator.hasNext();) {
+			Interest interest = (Interest) iterator.next();
+			if (interest.getWeight() != 0 && interest.getWeight() > flag) {
+				i = interest.getTag().getTagName();
+				flag = interest.getWeight();
+			}
+		}
+		return i;
+	}
 }

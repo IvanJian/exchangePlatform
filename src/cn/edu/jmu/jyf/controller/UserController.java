@@ -254,4 +254,14 @@ public class UserController {
 		}
 		return new ErrorResponse("0903", "设置出错");
 	}
+
+	@RequestMapping(value = "/api/user/interest", method = RequestMethod.POST)
+	@ResponseBody
+	public String getInterest(@RequestBody Token token) {
+		if (!UserService.verifyToken(token)) {
+			return "null";
+		}
+		return UserService.getInterest(token.getUserId());
+	}
+
 }
